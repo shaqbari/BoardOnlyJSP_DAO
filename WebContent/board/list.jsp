@@ -7,6 +7,9 @@
 	BoardDAO dao=new BoardDAO();
 %>
 <%
+//지금까지 쓴 방법은 modle1방식이다 model과 view를 분리시켜두었다.
+
+
 /* 	//DAO를 이용하여 레코드 가져오자
 	ResultSet rs=dao.select();
 	out.print(rs);
@@ -43,7 +46,10 @@
 	int firstPage=currentPage-(currentPage-1)%blockSize;
 	int lastPage=firstPage+blockSize-1; //블럭당 마지막 페이지
 	
-	int num=totalRecord-(currentPage-1)*pageSize; //페이지당 시작 번호
+	int curPos=(currentPage-1)*pageSize; //페이지당 시작 index(ArrayList에서)
+	int num=totalRecord-curPos; //페이지당 시작 번호//기존 변수를 이용하는 것이 유지보수상 좋다.
+	//int num=totalRecord-(currentPage-1)*pageSize; //페이지당 시작 번호
+	
 %>
 
 <%="currentPage="+currentPage %>
@@ -111,16 +117,18 @@ img{border:0px}
 		<td colspan="5" id="list">
 		  <table width="100%" border="0" cellpadding="0" cellspacing="0">
 		  
-		  <% for(int i=0; i<=pageSize; i++){ %>
+		  <% for(int i=0; i<pageSize; i++){ %>
 			<%if(num<1)break; %>
+			<%-- Board dto=list.get(curPos++); 좀 위험한 위치 num이 멤버변수라 여기서는 괜찮다.--%>
 		    <tr align="center" height="20px" onMouseOver="this.style.background='#FFFF99'" onMouseOut="this.style.background=''">
 			  
 				
-				<td width="50"> <%=num-- %> </td>
-				<td width="303"><a href="detail.jsp"><%=list.get(i).getTitle() %></a></td>
-				<td width="100"><%=list.get(i).getWriter() %></td>
-				<td width="100"><%=list.get(i).getRegdate() %></td>
-				<td width="50"><%=list.get(i).getHit() %></td>
+				<td width="50"><%=curPos %>: <%=num-- %> </td>
+			<% Board dto=list.get(curPos++); %>
+				<td width="303"><a href="detail.jsp?board_id=<%=dto.getBoard_id()%>"><%=dto.getTitle() %></a></td>
+				<td width="100"><%=dto.getWriter() %></td>
+				<td width="100"><%=dto.getRegdate().substring(0, 10)%></td>
+				<td width="50"><%=dto.getHit() %></td>
 			
 			    
 		    </tr>
@@ -141,14 +149,14 @@ img{border:0px}
 		<%} %>
 		
 		<%for(int i=firstPage; i<=lastPage; i++){ %>		
-		<%if(i>totalPage)break;%><!-- 내가 가진 페이지보다 크면 그만 찍어라 -->
+			<%if(i>totalPage)break;%><!-- 내가 가진 페이지보다 크면 그만 찍어라 -->
    			<a <%if(i==currentPage){ %>class="pageStyle"<%} %> href="/board/list.jsp?currentPage=<%=i%>">[<%=i%>]</a> <!--get방식으로 현재의 페이지를 요청한다. -->
     	<%} %>
     	
     	<%if(lastPage+1<totalPage){ //다음페이지가 있다면 %>
-    	<a href="/board/list.jsp?currentPage=<%=lastPage+1%>">▶</a>
+    		<a href="/board/list.jsp?currentPage=<%=lastPage+1%>">▶</a>
     	<%}else{ %>
-    	<a href="javascript:alert('마지막페이지 입니다.');">▶</a> 
+    		<a href="javascript:alert('마지막페이지 입니다.');">▶</a> 
     	<%} %>
     </td>
   </tr>
