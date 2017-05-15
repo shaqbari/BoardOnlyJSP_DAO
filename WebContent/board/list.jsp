@@ -32,7 +32,7 @@
 	int pageSize=10; //페이지당 보여질 레코드 수 sqlplus에서도 이 변수명 사용한다.
 	int totalPage=(int)Math.ceil((float)totalRecord/pageSize); //총페이지수
 	//연산할때 양쪽중에 하나만 달라도 손실이 발생하지 않는것을 기준으로 한다.
-	//Math.ceil():올림 floor():버림 round():반올림 스태틱 메소드라 그냥 써도된다.
+	//Math.ceil():올림 floor():버림 round():반올림 //스태틱 메소드라 그냥 써도된다.
 	
 	int totalBlock=1;
 		
@@ -119,11 +119,12 @@ img{border:0px}
 		  
 		  <% for(int i=0; i<pageSize; i++){ %>
 			<%if(num<1)break; %>
-			<%-- Board dto=list.get(curPos++); 좀 위험한 위치 num이 멤버변수라 여기서는 괜찮다.--%>
+			<%-- Board dto=list.get(curPos++); 좀 위험한 위치 num이 멤버변수?라 여기서는 괜찮다. 
+			멤버 변수가 아니라 연산 다 끝난뒤 더한다.--%>
 		    <tr align="center" height="20px" onMouseOver="this.style.background='#FFFF99'" onMouseOut="this.style.background=''">
 			  
 				
-				<td width="50"><%=curPos %>: <%=num-- %> </td>
+				<td width="50"> <%=num-- %> </td>
 			<% Board dto=list.get(curPos++); %>
 				<td width="303"><a href="detail.jsp?board_id=<%=dto.getBoard_id()%>"><%=dto.getTitle() %></a></td>
 				<td width="100"><%=dto.getWriter() %></td>
